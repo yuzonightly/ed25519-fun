@@ -1,0 +1,64 @@
+// Author:
+// - Yuzo <yuzonakai@gmail.com>
+
+// Utilitarian functions.
+
+/// Input: 64-bit unsigned.
+/// Output: 128-bit unsigned.
+/// Multiplication between two 64-bit unsigned.
+pub fn m6464(x: u64, y: u64) -> u128 {
+    (x as u128) * (y as u128)
+}
+
+/// Test if b and c are equals.
+pub fn equal(b: u8, c: u8) -> u8 {
+    let mut result: u8 = 0;
+    let xor: u8 = b ^ c;
+    for i in 0..8 {
+        // Make sure the last bit of result is set if
+        // b and c are not equal.
+        result |= xor >> i;
+    }
+    (result ^ 0x01) & 0x01
+}
+
+/// Converts the first 64 bits from bytes to u64.
+pub fn load_8(bytes: &[u8]) -> u64 {
+    let h: u64 = (bytes[0] as u64)
+        | ((bytes[1] as u64) << 8)
+        | ((bytes[2] as u64) << 16)
+        | ((bytes[3] as u64) << 24)
+        | ((bytes[4] as u64) << 32)
+        | ((bytes[5] as u64) << 40)
+        | ((bytes[6] as u64) << 48)
+        | ((bytes[7] as u64) << 56);
+
+    h
+}
+
+/// Converts the first 32 bits from bytes to i64.
+pub fn load_4i(bytes: &[u8]) -> i64 {
+    let h = (bytes[0] as u64)
+        | ((bytes[1] as u64) << 8)
+        | ((bytes[2] as u64) << 16)
+        | ((bytes[3] as u64) << 24);
+
+    h as i64
+}
+
+/// Converts the first 24 bits from bytes to i64.
+pub fn load_3i(bytes: &[u8]) -> i64 {
+    let h = (bytes[0] as u64)
+        | ((bytes[1] as u64) << 8)
+        | ((bytes[2] as u64) << 16);
+
+    h as i64
+}
+
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn hey() {
+
+    }
+}

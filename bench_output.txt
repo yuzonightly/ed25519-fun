@@ -1,0 +1,73 @@
+########################################## WITHOUT PRECOMPUTATION ##########################################
+
+Gnuplot not found, using plotters backend
+Benchmarking [Private key + public key] generation.
+Benchmarking [Private key + public key] generation.: Warming up for 3.0000 s
+Benchmarking [Private key + public key] generation.: Collecting 100 samples in estimated 5.1688 s (50k iterations)
+Benchmarking [Private key + public key] generation.: Analyzing
+[Private key + public key] generation.
+                        time:   [100.39 us 100.58 us 100.86 us]
+                        change: [+0.6110% +1.7683% +3.1067%] (p = 0.00 < 0.05)
+                        Change within noise threshold.
+Found 18 outliers among 100 measurements (18.00%)
+  2 (2.00%) high mild
+  16 (16.00%) high severe
+
+Benchmarking Signature generation.
+Benchmarking Signature generation.: Warming up for 3.0000 s
+Benchmarking Signature generation.: Collecting 100 samples in estimated 5.2418 s (50k iterations)
+Benchmarking Signature generation.: Analyzing
+Signature generation.   time:   [102.96 us 103.22 us 103.55 us]
+                        change: [-0.5519% +0.4157% +1.4525%] (p = 0.41 > 0.05)
+                        No change in performance detected.
+Found 7 outliers among 100 measurements (7.00%)
+  4 (4.00%) high mild
+  3 (3.00%) high severe
+
+Benchmarking Signature verification.
+Benchmarking Signature verification.: Warming up for 3.0000 s
+Benchmarking Signature verification.: Collecting 100 samples in estimated 5.0825 s (91k iterations)
+Benchmarking Signature verification.: Analyzing
+Signature verification. time:   [55.266 us 55.380 us 55.547 us]
+                        change: [-2.3904% -1.0563% +0.0241%] (p = 0.10 > 0.05)
+                        No change in performance detected.
+Found 14 outliers among 100 measurements (14.00%)
+  8 (8.00%) high mild
+  6 (6.00%) high severe
+
+########################################## WITH PRECOMPUTATION ##########################################
+
+Gnuplot not found, using plotters backend
+Benchmarking [Private key + public key] generation.
+Benchmarking [Private key + public key] generation.: Warming up for 3.0000 s
+Benchmarking [Private key + public key] generation.: Collecting 100 samples in estimated 5.0178 s (268k iterations)
+Benchmarking [Private key + public key] generation.: Analyzing
+[Private key + public key] generation.
+                        time:   [17.074 us 17.113 us 17.163 us]
+                        change: [-83.167% -82.921% -82.697%] (p = 0.00 < 0.05)
+                        Performance has improved.
+Found 1 outliers among 100 measurements (1.00%)
+  1 (1.00%) high mild
+
+Benchmarking Signature generation.
+Benchmarking Signature generation.: Warming up for 3.0000 s
+Benchmarking Signature generation.: Collecting 100 samples in estimated 5.0579 s (232k iterations)
+Benchmarking Signature generation.: Analyzing
+Signature generation.   time:   [21.659 us 21.686 us 21.721 us]
+                        change: [-79.312% -79.105% -78.899%] (p = 0.00 < 0.05)
+                        Performance has improved.
+Found 17 outliers among 100 measurements (17.00%)
+  2 (2.00%) low mild
+  3 (3.00%) high mild
+  12 (12.00%) high severe
+
+Benchmarking Signature verification.
+Benchmarking Signature verification.: Warming up for 3.0000 s
+Benchmarking Signature verification.: Collecting 100 samples in estimated 5.1443 s (91k iterations)
+Benchmarking Signature verification.: Analyzing
+Signature verification. time:   [55.488 us 55.692 us 55.953 us]
+                        change: [-0.6263% +0.5274% +1.6106%] (p = 0.35 > 0.05)
+                        No change in performance detected.
+Found 9 outliers among 100 measurements (9.00%)
+  6 (6.00%) high mild
+  3 (3.00%) high severe
