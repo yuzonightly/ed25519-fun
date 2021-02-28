@@ -5,7 +5,7 @@
 
 #![allow(non_snake_case, non_upper_case_globals)]
 
-use crate::field_element::FieldElement;
+use crate::curve25519::field_element::FieldElement;
 
 // Multiple of p: 2 * (2^255 - 19).
 pub const TwoP0: u64 = 0x0fffffffffffda;
@@ -44,13 +44,3 @@ pub const I: FieldElement = FieldElement([
 pub const FieldZero: FieldElement = FieldElement([0, 0, 0, 0, 0]);
 
 pub const FieldOne: FieldElement = FieldElement([1, 0, 0, 0, 0]);
-
-pub const FieldTwo: FieldElement = FieldElement([2, 0, 0, 0, 0]);
-
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn D() {
-
-    }
-}

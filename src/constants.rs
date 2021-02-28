@@ -13,3 +13,6 @@ pub(crate) const SecretKeySize: usize = 32;
 
 // Length of the Ed25519 signature: 64 bytes.
 pub(crate) const SignatureSize: usize = 64;
+
+// Length of the Ed25519 signature: 64 bytes.
+pub(crate) const KeypairSize: usize = 64;

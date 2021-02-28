@@ -3,7 +3,7 @@
 
 // Scalar operations.
 
-use crate::utils::{load_3i, load_4i};
+use super::utils::{load_3i, load_4i};
 
 /// Input: a = a[0] + 256*a[1] + 256^{2}*a[2] + ...
 /// + 256^{63}*a[63].
@@ -341,7 +341,7 @@ pub fn reduce(s: &mut [u8]) {
 /// c = c[0] + 256*c[1] + 256^{2}*c[2] + ...
 /// + 256^{31}*c[31].
 /// Returns s = (a * b + c) mod L.
-/// a = s[0] + 256*s[1] + 256^{2}*s[2] + ...
+/// s = s[0] + 256*s[1] + 256^{2}*s[2] + ...
 /// + 256^{31}*s[31].
 pub fn multiply_add(s: &mut [u8], a: &[u8], b: &[u8], c: &[u8]) {
     let a0 = 2097151 & load_3i(&a[0..3]);

@@ -3,14 +3,14 @@
 
 // Regression testing.
 
-extern crate ed25519;
+extern crate ed25519_fun;
 extern crate hex;
 extern crate rand;
 extern crate sha2;
 
 #[cfg(test)]
 mod test_vectors {
-    use ed25519::ed25519::{Keypair, PublicKey, SecretKey, Signature};
+    use ed25519_fun::{Keypair, PublicKey, SecretKey, Signature};
     use std::fs::File;
     use std::io::BufRead;
     use std::io::BufReader;

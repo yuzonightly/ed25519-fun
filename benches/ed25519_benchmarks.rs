@@ -4,10 +4,9 @@
 // ed25519-rust benchmarks.
 
 extern crate criterion;
-extern crate ed25519_rust;
+extern crate ed25519_fun;
 
-use ed25519::{Keypair, Signature};
-use ed25519_rust::ed25519;
+use ed25519_fun::{Keypair, Signature};
 
 use criterion::{criterion_group, criterion_main, Criterion};
 

@@ -8,8 +8,8 @@ use core::ops::Mul;
 use core::ops::Sub;
 use std::cmp::{Eq, PartialEq};
 
-use crate::curve25519_const::{Reduce51Mask, TwoP0, TwoP1234};
-use crate::utils::{load_8, m6464};
+use super::constants::{Reduce51Mask, TwoP0, TwoP1234};
+use super::utils::{load_8, m6464};
 
 use subtle::{Choice, ConditionallySelectable, ConstantTimeEq};
 
@@ -486,7 +486,7 @@ impl FieldElement {
 
 #[cfg(test)]
 mod tests {
-    use crate::field_element::FieldElement;
+    use crate::curve25519::field_element::FieldElement;
     use subtle::ConditionallySelectable;
 
     #[test]

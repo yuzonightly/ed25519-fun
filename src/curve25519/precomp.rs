@@ -7,13 +7,11 @@
 
 #![allow(non_snake_case)]
 
-// ! Move these constants to curve25519_constants module.
+use super::constants::{FieldZero, D2};
+use super::field_element::FieldElement;
+use super::group_element::{Precomp, P3};
 
-use crate::curve25519_const::FieldZero;
-use crate::curve25519_const::D2;
-use crate::field_element::FieldElement;
-use crate::group_element::{Precomp, P3};
-
+#[allow(dead_code)]
 pub fn precompute_single(B: P3) -> [[Precomp; 8]; 32] {
     let mut precomp = [[Precomp {
         YpX: FieldZero,
@@ -43,6 +41,7 @@ pub fn precompute_single(B: P3) -> [[Precomp; 8]; 32] {
     precomp
 }
 
+#[allow(dead_code)]
 pub fn precompute_double(B: P3) -> [Precomp; 8] {
     let mut precomp = [Precomp {
         YpX: FieldZero,
@@ -67,12 +66,6 @@ pub fn precompute_double(B: P3) -> [Precomp; 8] {
     }
 
     precomp
-}
-
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn hey() {}
 }
 
 // [i] = i * B

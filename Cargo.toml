@@ -1,5 +1,5 @@
 [package]
-name = "ed25519"
+name = "ed25519-fun"
 version = "0.0.0"
 authors = ["Eduardo Yuzo Nakai <yuzonakai@gmail.com>"]
 edition = "2018"
@@ -17,6 +17,7 @@ harness = false
 [dependencies]
 subtle = { version = "^2.2.2", default-features = false }
 sha2 = { version = "^0.8.1", default-features = false }
+ed25519 = { version = "1", default-features = false }
 rand = { version = "^0.7.3" }
 
 [features]

@@ -9,10 +9,10 @@ use core::ops::Add;
 use core::ops::Sub;
 use std::cmp::min;
 
-use crate::curve25519_const::{FieldOne, FieldZero, D, D2, I};
-use crate::field_element::FieldElement;
-use crate::precomp::{BI, PRECOMP_BASE};
-use crate::utils::equal;
+use super::constants::{FieldOne, FieldZero, D, D2, I};
+use super::field_element::FieldElement;
+use super::precomp::{BI, PRECOMP_BASE};
+use super::utils::equal;
 
 use subtle::{Choice, ConditionallySelectable};
 
@@ -183,7 +183,6 @@ impl P2 {
             Z: FieldZero,
             T2d: FieldZero,
         }; 8];
-        
         AI[0] = A.to_Cached(); // A
         let A2 = A.double().to_P3(); // 2A
         for i in 1..8 {
@@ -427,7 +426,9 @@ impl Precomp {
         h
     }
 
-    pub fn scalar_multiply_no_precomputation(scalar: &[u8]) -> P3 {
+    // ! config this as feature
+    #[allow(dead_code)]
+    pub fn scalar_multiply_without_precomputation(scalar: &[u8]) -> P3 {
         const BXP: [u8; 32] = [
             0x1a, 0xd5, 0x25, 0x8f, 0x60, 0x2d, 0x56, 0xc9, 0xb2, 0xa7, 0x25, 0x95, 0x60, 0xc7,
             0x2c, 0x69, 0x5c, 0xdc, 0xd6, 0xfd, 0x31, 0xe2, 0xa4, 0xc0, 0xfe, 0x53, 0x6e, 0xcd,
