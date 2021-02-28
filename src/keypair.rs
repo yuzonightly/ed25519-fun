@@ -103,7 +103,6 @@ impl Keypair {
 
 #[cfg(test)]
 mod tests {
-    use crate::ed25519::*;
 
     #[test]
     fn as_from_bytes_secret_key() {}

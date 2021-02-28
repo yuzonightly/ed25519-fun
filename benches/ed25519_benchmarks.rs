@@ -12,12 +12,12 @@ use criterion::{criterion_group, criterion_main, Criterion};
 
 fn keypair_generation(c: &mut Criterion) {
     c.bench_function("[Private key + public key] generation.", move |b| {
-        b.iter(|| Keypair::generate_keypair())
+        b.iter(|| Keypair::generate())
     });
 }
 
 fn signature_generation(c: &mut Criterion) {
-    let keypair = Keypair::generate_keypair();
+    let keypair = Keypair::generate();
     let message: &[u8] = b"";
 
     c.bench_function("Signature generation.", move |b| {
@@ -26,12 +26,12 @@ fn signature_generation(c: &mut Criterion) {
 }
 
 fn signature_verification(c: &mut Criterion) {
-    let keypair = Keypair::generate_keypair();
+    let keypair = Keypair::generate();
     let message: &[u8] = b"";
     let signature: Signature = keypair.sign(message);
 
     c.bench_function("Signature verification.", move |b| {
-        b.iter(|| keypair.verify(message, &signature.0))
+        b.iter(|| keypair.verify(message, signature))
     });
 }
 
