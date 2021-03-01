@@ -39,13 +39,13 @@ mod test_vectors {
 
             let secret: SecretKey = SecretKey::from_bytes(&secret_bytes[..32]).unwrap();
 
-            let pk1: PublicKey = PublicKey::from_bytes(&public_bytes[..32]).unwrap();
-            let sign1: Signature = Signature::from_bytes(&signature_bytes[..64]).unwrap();
+            let pk1 = PublicKey::from_bytes(&public_bytes[..32]).unwrap();
+            let sign1 = Signature::from_bytes(&signature_bytes[..64]).unwrap();
 
-            let keypair: Keypair = Keypair::generate_public_key(secret);
+            let keypair = Keypair::generate_public_key(secret);
 
-            let pk2: PublicKey = keypair.public;
-            let sign2: Signature = keypair.sign(&message_bytes);
+            let pk2 = keypair.public;
+            let sign2 = keypair.sign(&message_bytes);
 
             assert!(
                 pk1.as_bytes() == pk2.as_bytes(),

@@ -20,6 +20,7 @@ use sha2::{Digest, Sha512};
 
 // TODO: configure scalar without precomp as feature?
 // TODO: let user choose prng library for generating the secret key.
+// TODO: change repo name to ed25519-fun
 
 //? Quite alot of future works and things to explore.
 
@@ -61,10 +62,10 @@ impl Keypair {
     }
 
     /// Generates public key by providing your own private key.
-    pub fn generate_public_key(sk: SecretKey) -> Keypair {
-        let public = PublicKey::generate(&sk);
+    pub fn generate_public_key(secret: SecretKey) -> Keypair {
+        let public = PublicKey::generate(&secret);
 
-        Keypair { secret: sk, public }
+        Keypair { secret, public }
     }
 
     /// Converts Keypair to bytes.
@@ -105,5 +106,5 @@ impl Keypair {
 mod tests {
 
     #[test]
-    fn as_from_bytes_secret_key() {}
+    fn as_from_slices_secret_key() {}
 }

@@ -18,7 +18,7 @@ use crate::errors::*;
 // TODO: Use this file for ed25519 lib traits.
 
 /// The Ed25519 signature.
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub struct Signature(pub(crate) [u8; SignatureSize]);
 
 impl Signature {

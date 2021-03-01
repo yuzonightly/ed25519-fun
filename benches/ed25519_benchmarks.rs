@@ -6,7 +6,8 @@
 extern crate criterion;
 extern crate ed25519_fun;
 
-use ed25519_fun::{Keypair, Signature};
+use ed25519_fun::{Keypair};
+use ed25519_fun::{Signature};
 
 use criterion::{criterion_group, criterion_main, Criterion};
 
