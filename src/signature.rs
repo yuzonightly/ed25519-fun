@@ -14,6 +14,7 @@ use crate::errors::*;
 // TODO: let user choose prng library for generating the secret key.
 // TODO: create curve25519 directory.
 
+// ? I believe I should comment all functions like this one SergioBenitez/stable-pattern ehehh
 // TODO: Quite alot of future works and things to explore.
 // TODO: Use this file for ed25519 lib traits.
 
