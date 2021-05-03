@@ -15,7 +15,7 @@ mod test_vectors {
     use std::io::BufRead;
     use std::io::BufReader;
 
-    // http://ed25519.cr.yp.to/python/sign.input
+    //  sign.input test vectors: http://ed25519.cr.yp.to/python/sign.input
     #[test]
     pub fn ed25519_cr_yp_to_regression_test() {
         let file = File::open("./tests/sign.input");
@@ -63,5 +63,41 @@ mod test_vectors {
                 lineno
             );
         }
+    }
+
+    
+    // verify.input test vectors: Taming the many EdDSAs
+    #[test]
+    pub fn eddsa_test_vectors() {
+        let file = File::open("./tests/verify.input");
+        if file.is_err() {
+            println!("Where are the second test vectors? :(");
+            panic!();
+        }
+        let buffer = BufReader::new(file.unwrap());
+
+        let mut lineno: usize = 0;
+        let mut results = [0u8; 12];
+        for line in buffer.lines() {
+            let l = line.unwrap();
+            let slices: Vec<&str> = l.split(":").collect();
+
+            let message_bytes: Vec<u8> = hex::decode(&slices[0]).unwrap();
+            let public_bytes: Vec<u8> = hex::decode(&slices[1]).unwrap();
+            let signature_bytes: Vec<u8> = hex::decode(&slices[2]).unwrap();
+
+            let pk = PublicKey::from_bytes(&public_bytes[..32]).unwrap();
+            let sig = Signature::from_bytes(&signature_bytes[..]).unwrap();
+
+            // Check if the implementation accepts the signature.
+            if pk.verify(&message_bytes, &sig).is_ok() {
+                results[lineno] = 1;
+            } else {
+                results[lineno] = 0;
+            }
+
+            lineno += 1;
+        }
+        println!("{:?}", results);
     }
 }

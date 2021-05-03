@@ -57,8 +57,45 @@ pub fn load_3i(bytes: &[u8]) -> i64 {
 
 #[cfg(test)]
 mod tests {
-    #[test]
-    fn hey() {
+    use super::*;
 
+    #[test]
+    fn equal_test() {
+        let a = 1;
+        let b = 10;
+        let c = 1;
+        assert!(equal(a, b) == 0u8);
+        assert!(equal(a, c) == 1u8);
+    }
+
+    #[test]
+    fn load_8_test() {
+        let a: [u8; 8] = [1, 1, 1, 1, 1, 1, 1, 1];
+        let A = 72340172838076673u64;
+        let B = load_8(&a);
+        assert!(A == B);
+    }
+
+    #[test]
+    fn load_4i_test() {
+        let a: [u8; 4] = [1, 1, 1, 1];
+        let A = 16843009i64;
+        let B = load_4i(&a);
+        assert!(A == B);
+    }
+
+    #[test]
+    fn load_3i_test() {
+        let a: [u8; 3] = [1, 1, 1];
+        let A = 65793i64;
+        let B = load_3i(&a);
+        assert!(A == B);
+    }
+
+    #[test]
+    fn m6464_test() {
+        let a: u64 = 5;
+        let b: u64 = 10;
+        assert!(50u128 == m6464(a, b));
     }
 }

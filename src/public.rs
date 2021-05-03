@@ -15,15 +15,6 @@ use crate::signature::*;
 
 use sha2::{Digest, Sha512};
 
-// TODO: configure scalar without precomp as feature.
-// TODO: Zeroize.
-// TODO: Tests.
-// TODO: let user choose prng library for generating the secret key.
-// TODO: create curve25519 directory.
-
-// TODO: Quite alot of future works and things to explore.
-// TODO: Use this file for ed25519 lib traits.
-
 /// The Ed25519 public key.
 #[derive(Copy, Clone)]
 pub struct PublicKey(pub(crate) [u8; PublicKeySize]);
@@ -104,8 +95,6 @@ impl PublicKey {
             return Err(Error::InvalidSignature);
         }
 
-        // ! Point R from the first half of the signature.
-
         // Try to decode the public key into a P3 point.
         // Verification fails if decoding fails.
         let A = match P3::decode(self.0) {
@@ -128,7 +117,7 @@ impl PublicKey {
 
         // Check the group equation [s]B = R + [k]A'.
         // Perform [s]B + [k]A'.
-        let eq = P2::double_scalar_multiply_vartime(&k[..], &signature[32..64], A);
+        let eq = P2::double_scalar_multiply_vartime(&k[..], s, A);
         // Check [s]B + [k]A' == R?
         if eq
             .encode()
@@ -142,5 +131,20 @@ impl PublicKey {
         } else {
             return Err(Error::SignatureMismatch);
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    extern crate hex;
+
+    use super::*;
+
+    #[test]
+    fn as_from_slices_public_key() {
+        let public_bytes = hex::decode("d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a").unwrap();
+        let public = PublicKey::from_bytes(&public_bytes).unwrap();
+        let bytes = public.as_bytes();
+        assert!(bytes == public_bytes[..]);
     }
 }

@@ -15,14 +15,9 @@ use crate::signature::*;
 
 use sha2::{Digest, Sha512};
 
-// TODO: Tests.
-// TODO: Zeroize.
+// TODO: comments; variable names.
 
-// TODO: configure scalar without precomp as feature?
-// TODO: let user choose prng library for generating the secret key.
-// TODO: change repo name to ed25519-fun
-
-//? Quite alot of future works and things to explore.
+// * Leverage types (abstraction); implement traits
 
 /// A pair of public and secret keys.
 pub struct Keypair {
@@ -33,7 +28,6 @@ pub struct Keypair {
 impl Keypair {
     /// Generates asymmetric keys: both public and secret,
     /// as described in RFC 8032.
-    /// ! let user choose PRNG here
     pub fn generate() -> Keypair {
         let secret = SecretKey::generate_key();
 
@@ -104,7 +98,15 @@ impl Keypair {
 
 #[cfg(test)]
 mod tests {
+    extern crate hex;
+
+    use super::*;
 
     #[test]
-    fn as_from_slices_secret_key() {}
+    fn as_from_slices_keypair() {
+        let keypair_bytes = hex::decode("9d61b19deffd5a60ba844af492ec2cc44449c5697b326919703bac031cae7f60d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a").unwrap();
+        let keypair = Keypair::from_bytes(&keypair_bytes).unwrap();
+        let bytes = keypair.as_bytes();
+        assert!(bytes == keypair_bytes[..]);
+    }
 }

@@ -12,9 +12,16 @@ use super::constants::{Reduce51Mask, TwoP0, TwoP1234};
 use super::utils::{load_8, m6464};
 
 use subtle::{Choice, ConditionallySelectable, ConstantTimeEq};
+use zeroize::Zeroize;
 
 #[derive(Copy, Clone)]
 pub struct FieldElement(pub [u64; 5]);
+
+impl Zeroize for FieldElement {
+    fn zeroize(&mut self) {
+        self.0.zeroize();
+    }
+}
 
 impl Eq for FieldElement {}
 
@@ -487,16 +494,38 @@ impl FieldElement {
 #[cfg(test)]
 mod tests {
     use crate::curve25519::field_element::FieldElement;
-    use subtle::ConditionallySelectable;
+    use subtle::{ConditionallySelectable, ConstantTimeEq, Choice};
+
+    /// Random encoded FieldElement from https://github.com/dalek-cryptography/curve25519-dalek/blob/main/src/field.rs
+    /// Byte representation of a
+    static A_BYTES: [u8; 32] =
+    [ 0x04, 0xfe, 0xdf, 0x98, 0xa7, 0xfa, 0x0a, 0x68,
+      0x84, 0x92, 0xbd, 0x59, 0x08, 0x07, 0xa7, 0x03,
+      0x9e, 0xd1, 0xf6, 0xf2, 0xe1, 0xd9, 0xe2, 0xa4,
+      0xa4, 0x51, 0x47, 0x36, 0xf3, 0xc3, 0xa9, 0x17];
+
+    /// Byte representation of a**2
+    static ASQ_BYTES: [u8; 32] =
+        [ 0x75, 0x97, 0x24, 0x9e, 0xe6, 0x06, 0xfe, 0xab,
+        0x24, 0x04, 0x56, 0x68, 0x07, 0x91, 0x2d, 0x5d,
+        0x0b, 0x0f, 0x3f, 0x1c, 0xb2, 0x6e, 0xf2, 0xe2,
+        0x63, 0x9c, 0x12, 0xba, 0x73, 0x0b, 0xe3, 0x62];
+
+    /// Byte representation of 1/a
+    static AINV_BYTES: [u8; 32] =
+        [0x96, 0x1b, 0xcd, 0x8d, 0x4d, 0x5e, 0xa2, 0x3a,
+        0xe9, 0x36, 0x37, 0x93, 0xdb, 0x7b, 0x4d, 0x70,
+        0xb8, 0x0d, 0xc0, 0x55, 0xd0, 0x4c, 0x1d, 0x7b,
+        0x90, 0x71, 0xd8, 0xe9, 0xb6, 0x18, 0xe6, 0x30];
 
     #[test]
     fn conditional_assign_test() {
         let mut f = FieldElement([10, 20, 30, 40, 50]);
         let g = FieldElement([11, 21, 31, 41, 51]);
         let initial_f = f;
-        f.conditional_assign(&g, 0.into());
+        f.conditional_assign(&g, Choice::from(0));
         assert!(f == initial_f);
-        f.conditional_assign(&g, 1.into());
+        f.conditional_assign(&g, Choice::from(1));
         assert!(f == g);
     }
 
@@ -504,9 +533,9 @@ mod tests {
     fn conditional_select_test() {
         let f = FieldElement([10, 20, 30, 40, 50]);
         let g = FieldElement([11, 21, 31, 41, 51]);
-        let h1: FieldElement = FieldElement::conditional_select(&f, &g, 0.into());
+        let h1: FieldElement = FieldElement::conditional_select(&f, &g, Choice::from(0));
         assert!(h1 == f);
-        let h2: FieldElement = FieldElement::conditional_select(&f, &g, 1.into());
+        let h2: FieldElement = FieldElement::conditional_select(&f, &g, Choice::from(1));
         assert!(h2 == g);
     }
 
@@ -516,10 +545,19 @@ mod tests {
         let mut g = FieldElement([11, 21, 31, 41, 51]);
         let initial_f = f;
         let initial_g = g;
-        FieldElement::conditional_swap(&mut f, &mut g, 0.into());
+        FieldElement::conditional_swap(&mut f, &mut g, Choice::from(0));
         assert!(f == initial_f && g == initial_g);
-        FieldElement::conditional_swap(&mut f, &mut g, 1.into());
+        FieldElement::conditional_swap(&mut f, &mut g, Choice::from(1));
         assert!(f == initial_g && g == initial_f);
+    }
+
+    #[test]
+    fn constant_time_eq() {
+        let f = FieldElement([10, 20, 30, 40, 50]);
+        let g = FieldElement([11, 21, 31, 41, 51]);
+        let h = FieldElement([10, 20, 30, 40, 50]);
+        assert!(f.ct_eq(&g).unwrap_u8() == 0);
+        assert!(f.ct_eq(&h).unwrap_u8() == 1);
     }
 
     #[test]
@@ -528,5 +566,21 @@ mod tests {
         let g = f.encode();
         let h = FieldElement::decode(g);
         assert!(f == h);
+    }
+
+    #[test]
+    fn square_test() {
+        let a = FieldElement::decode(A_BYTES);
+        let a_sq = FieldElement::decode(ASQ_BYTES);
+        let sq = a.square();
+        assert!(a_sq == sq);
+    }
+
+    #[test]
+    fn invert_test() {
+        let a = FieldElement::decode(A_BYTES);
+        let a_inv = FieldElement::decode(AINV_BYTES);
+        let inv = FieldElement::invert(&a);
+        assert!(a_inv == inv);
     }
 }

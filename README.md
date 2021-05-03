@@ -1,6 +1,6 @@
 # ed25519
 
-Rust implementation of Ed25519. Please do not use it. Heavily based on the `ed25519_donna`, `ed25519_dalek` and str4d's `ed25519-java` implementations. Checkout their implementations instead.
+Rust implementation of Ed25519. Please do not use it (learning purposes). Heavily based on the `ed25519_donna`, `ed25519_dalek` and str4d's `ed25519-java` implementations. Checkout their implementations instead.
 
 ## Installation
 
@@ -9,7 +9,7 @@ I am not going to publish this library on `crates.io`. Therefore, this is one wa
 - Add the following to your Cargo.toml:
 
 ```toml
-ed25519 = { git = "https://github.com/yuzonightly/ed25519" }
+ed25519-fun = { git = "https://github.com/yuzonightly/ed25519" }
 ```
 
 - Make sure you are using Rust nightly (this crate uses third party crates such as `subtle`):

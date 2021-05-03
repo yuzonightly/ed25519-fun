@@ -8,16 +8,6 @@
 use crate::constants::*;
 use crate::errors::*;
 
-// TODO: configure scalar without precomp as feature.
-// TODO: Zeroize.
-// TODO: Tests.
-// TODO: let user choose prng library for generating the secret key.
-// TODO: create curve25519 directory.
-
-// ? I believe I should comment all functions like this one SergioBenitez/stable-pattern ehehh
-// TODO: Quite alot of future works and things to explore.
-// TODO: Use this file for ed25519 lib traits.
-
 /// The Ed25519 signature.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub struct Signature(pub(crate) [u8; SignatureSize]);
@@ -36,5 +26,20 @@ impl Signature {
 
         signature.copy_from_slice(bytes);
         Ok(Signature(signature))
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    extern crate hex;
+
+    use super::*;
+
+    #[test]
+    fn as_from_slices_signature() {
+        let sig_bytes = hex::decode("e5564300c360ac729086e2cc806e828a84877f1eb8e5d974d873e065224901555fb8821590a33bacc61e39701cf9b46bd25bf5f0595bbe24655141438e7a100b").unwrap();
+        let sig = Signature::from_bytes(&sig_bytes).unwrap();
+        let bytes = sig.as_bytes();
+        assert!(bytes == sig_bytes[..]);
     }
 }

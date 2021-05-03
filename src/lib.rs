@@ -4,6 +4,7 @@
 extern crate rand;
 extern crate sha2;
 extern crate subtle;
+extern crate zeroize;
 
 pub(crate) mod curve25519;
 

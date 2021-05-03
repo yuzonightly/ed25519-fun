@@ -18,18 +18,11 @@ use crate::public::*;
 use crate::signature::*;
 
 use sha2::{Digest, Sha512};
-
-// TODO: configure scalar without precomp as feature.
-// TODO: Zeroize.
-// TODO: Tests.
-// TODO: let user choose prng library for generating the secret key.
-// TODO: create curve25519 directory.
-
-// TODO: Quite alot of future works and things to explore.
-// TODO: Use this file for ed25519 lib traits.
+use zeroize::Zeroize;
 
 /// The Ed25519 secret key.
-#[derive(Copy, Clone)]
+#[derive(Zeroize)]
+#[zeroize(drop)]
 pub struct SecretKey(pub(crate) [u8; SecretKeySize]);
 
 impl SecretKey {
@@ -109,5 +102,20 @@ impl SecretKey {
         }
 
         Signature(signature)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    extern crate hex;
+
+    use super::*;
+
+    #[test]
+    fn as_from_slices_secret_key() {
+        let secret_bytes = hex::decode("9d61b19deffd5a60ba844af492ec2cc44449c5697b326919703bac031cae7f60").unwrap();
+        let secret = SecretKey::from_bytes(&secret_bytes).unwrap();
+        let bytes = secret.as_bytes();
+        assert!(bytes == secret_bytes[..]);
     }
 }

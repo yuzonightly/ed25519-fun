@@ -104,13 +104,14 @@ impl P2 {
         let x = self.X * recip; // recover x = X * recip
         let y = self.Y * recip; // recover y = Y * recip
         let mut s = y.encode();
+        s[31] ^= x.is_negative().unwrap_u8() << 7;
         // Sets the most significant bit of the last octet
         // if x is negative.
-        s[31] |= if x.is_negative().unwrap_u8() == 1 {
-            0x80
-        } else {
-            0
-        };
+        // s[31] |= if x.is_negative().unwrap_u8() == 1 {
+        //     0x80
+        // } else {
+        //     0
+        // };
 
         s
     }
@@ -265,12 +266,13 @@ impl P3 {
         let x = self.X * recip; // recover x = X * recip
         let y = self.Y * recip; // recover y = Y * recip
         let mut s: [u8; 32] = y.encode();
-        s[31] |= if x.is_negative().unwrap_u8() == 1 {
-            0x80
-        } else {
-            0
-        };
+        // s[31] |= if x.is_negative().unwrap_u8() == 1 {
+        //     0x80
+        // } else {
+        //     0
+        // };
 
+        s[31] ^= x.is_negative().unwrap_u8() << 7;
         s
     }
 
@@ -280,7 +282,6 @@ impl P3 {
 
     /// Returns a GroupElement given the 32-byte encoded point.
     pub fn decode(enc: [u8; 32]) -> Option<P3> {
-        // ? Check how y is extracted when negative.
         let y = FieldElement::decode(enc);
         let yy = y.square();
         let u = yy - FieldOne;
@@ -299,7 +300,7 @@ impl P3 {
             }
             x = x * I;
         }
-        // ? Changed this line.
+        
         if x.is_negative().unwrap_u8() == enc[31] >> 7 {
             x = x.negate();
         }
@@ -403,11 +404,14 @@ impl Precomp {
         let mut t: Precomp;
 
         let mut h = P3::zero();
+        // 64 table lookups
+        // 64 point additions
         for i in (1..64).step_by(2) {
             t = Precomp::select(i / 2, e[i]);
             h = (h + t).to_P3();
         }
 
+        // 4 doublings
         h = h
             .double()
             .to_P2()
@@ -418,6 +422,8 @@ impl Precomp {
             .double()
             .to_P3();
 
+        // 64 point lookups
+        // 64 point additions
         for i in (0..64).step_by(2) {
             t = Precomp::select(i / 2, e[i]);
             h = (h + t).to_P3();
@@ -426,7 +432,6 @@ impl Precomp {
         h
     }
 
-    // ! config this as feature
     #[allow(dead_code)]
     pub fn scalar_multiply_without_precomputation(scalar: &[u8]) -> P3 {
         const BXP: [u8; 32] = [
@@ -452,6 +457,7 @@ impl Precomp {
 
         // p is zero
         let mut p = P3::zero();
+        // 256 * 2 point additions
         for i in 0..256 {
             // q to cached (q was B)
             let q_cached = q.to_Cached();
@@ -567,6 +573,111 @@ impl Sub<Precomp> for P3 {
 
 #[cfg(test)]
 mod tests {
+    extern crate hex;
+    
+    use super::*;
+
+    static B_P3: P3 = P3 {
+        X: FieldElement([
+            1738742601995546,
+            1146398526822698,
+            2070867633025821,
+            562264141797630,
+            587772402128613,
+        ]),
+        Y: FieldElement([
+            1801439850948184,
+            1351079888211148,
+            450359962737049,
+            900719925474099,
+            1801439850948198,
+        ]),
+        Z: FieldElement([1, 0, 0, 0, 0]),
+        T: FieldElement([
+            1841354044333475,
+            16398895984059,
+            755974180946558,
+            900171276175154,
+            1821297809914039,
+        ]),
+    };
+    
+
+    static BYP: [u8; 32] = [
+        0x58, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66,
+        0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66,
+        0x66, 0x66, 0x66, 0x66,
+    ];
+
     #[test]
-    fn hey() {}
+    fn encoding_test() {
+        // let a = hex::decode("d072f8dd9c07fa7bc8d22a4b325d26301ee9202f6db89aa7c3731529e37e437c").unwrap();
+        // let mut a_bytes = [0u8; 32];
+        // a_bytes.copy_from_slice(&a);
+        let mut BY = BYP.clone();
+        // BY[31] |= 1 << 7;
+        let B = P3::decode(BY).unwrap();
+
+        assert!(B.X == B_P3.X.negate());
+        assert!(B.Y == B_P3.Y);
+        assert!(B.Z == B_P3.Z);
+        assert!(B.T == B_P3.T.negate());
+        
+        let b = B.encode();
+        BY[31] |= 1 << 7;
+        assert!(b == BY);
+    }
+
+    #[test]
+    fn scalar_multiply_test() {
+        let a = hex::decode("d072f8dd9c07fa7bc8d22a4b325d26301ee9202f6db89aa7c3731529e37e437c").unwrap();
+        let aB = Precomp::scalar_multiply(&a);
+
+        let A = hex::decode("d4cf8595571830644bd14af416954d09ab7159751ad9e0f7a6cbd92379e71a66").unwrap();
+        // let mut A_bytes = [0u8; 32];
+        // A_bytes.copy_from_slice(&A);
+        // let AB = P3::decode(A_bytes).unwrap();
+
+        assert!(aB.encode() == A[..]);
+        
+        // assert!(aB.X == AB.X);
+        // assert!(aB.Y == AB.Y);
+        // assert!(aB.Z == AB.Z);
+        // assert!(aB.T == AB.T);
+    }
+
+    #[test]
+    fn scalar_multiply_no_precomp_test() {
+        let a = hex::decode("d072f8dd9c07fa7bc8d22a4b325d26301ee9202f6db89aa7c3731529e37e437c").unwrap();
+        let aB = Precomp::scalar_multiply_without_precomputation(&a);
+
+        let A = hex::decode("d4cf8595571830644bd14af416954d09ab7159751ad9e0f7a6cbd92379e71a66").unwrap();
+        // let mut A_bytes = [0u8; 32];
+        // A_bytes.copy_from_slice(&A);
+        // let AB = P3::decode(A_bytes).unwrap();
+
+        assert!(aB.encode() == A[..]);
+
+        // assert!(aB.X == AB.X);
+        // assert!(aB.Y == AB.Y);
+        // assert!(aB.Z == AB.Z);
+        // assert!(aB.T == AB.T);
+    }
+
+    #[test]
+    fn double_scalar_multiply_vartime_and_point_doubling_test() {
+        let a = hex::decode("d072f8dd9c07fa7bc8d22a4b325d26301ee9202f6db89aa7c3731529e37e437c").unwrap();
+        let two = hex::decode("0200000000000000000000000000000000000000000000000000000000000000").unwrap();
+
+        // let A_bytes = hex::decode("d4cf8595571830644bd14af416954d09ab7159751ad9e0f7a6cbd92379e71a66").unwrap();
+        // let mut A_array = [0u8; 32];
+        // A_array.copy_from_slice(&A_bytes);
+        // let A = P3::decode(A_array).unwrap();
+
+        let B = B_P3.clone();
+        let four_B = P2::double_scalar_multiply_vartime(&two, &two, B).encode();
+        let B_four = B.double().to_P3().double().to_P2().encode();
+
+        assert!(four_B == B_four);
+    }
 }
