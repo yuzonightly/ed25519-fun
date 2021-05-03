@@ -9,31 +9,17 @@ I am not going to publish this library on `crates.io`. Therefore, this is one wa
 - Add the following to your Cargo.toml:
 
 ```toml
-ed25519-fun = { git = "https://github.com/yuzonightly/ed25519" }
-```
-
-- Make sure you are using Rust nightly (this crate uses third party crates such as `subtle`):
-
-```bash
-rustup default nightly
+ed25519-fun = { git = "https://github.com/yuzonightly/ed25519-fun" }
 ```
 
 ## Usage
 
-The interface will change in the future. For now this is how you can generate keys and signatures, and verify them.
-
 ### Import the crate
 
 ```rust
-extern crate ed25519;
+extern crate ed25519_fun;
 
-use ed25519::ed25519::{Keypair, Signature};
-
-fn main() {
-    .
-    .
-    .
-}
+use ed25519_fun::{Keypair, Signature};
 ```
 
 ### Key generation
@@ -41,7 +27,7 @@ fn main() {
 Generate a Keypair containing the private and the public key.
 
 ```rust
-let keypair: Keypair = Keypair::generate_keypair();
+let keypair: Keypair = Keypair::generate();
 ```
 
 ### Signature generation
@@ -58,19 +44,19 @@ let signature: Signature = keypair.sign(message);
 Verify the signature:
 
 ```rust
-let signok: bool = keypair.verify(message, &signature.0);
+let signok: bool = keypair.verify(message, signature);
 ```
 
 ## Benchmarks and Tests
 
 To run the benchmarks, run the following command in the project's root:
 
-```bash
-cargo bench
+```console
+me@mars:~/ed25519-fun$ cargo bench
 ```
 
 To run the tests, run the following command in the project's root:
 
-```bash
-cargo test
+```console
+me@mars:~/ed25519-fun$ cargo test
 ```
