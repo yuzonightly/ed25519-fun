@@ -116,7 +116,7 @@ impl P2 {
         s
     }
 
-    /// Doubles the FieldElement: 2 * self.
+    /// Point doubling: 2 * self.
     pub fn double(&self) -> P1P1 {
         let xx = self.X.square();
         let yy = self.Y.square();
