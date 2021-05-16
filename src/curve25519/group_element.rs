@@ -118,16 +118,16 @@ impl P2 {
 
     /// Point doubling: 2 * self.
     pub fn double(&self) -> P1P1 {
-        let xx = self.X.square();
-        let yy = self.Y.square();
-        let a = self.Z.double_square();
-        let YpX = self.X + self.Y;
-        let b = YpX.square();
+        let A = self.X.square();
+        let B = self.Y.square();
+        let C = self.Z.double_square();
+        let Y_plus_X = self.X + self.Y;
+        let a = Y_plus_X.square();
 
-        let y = yy + xx;
-        let z = yy - xx;
-        let x = b - y;
-        let t = a - z;
+        let y = A + B;
+        let z = B - A;
+        let x = a - y;
+        let t = C - z;
 
         P1P1 {
             X: x,
@@ -300,7 +300,6 @@ impl P3 {
             }
             x = x * I;
         }
-        
         if x.is_negative().unwrap_u8() == enc[31] >> 7 {
             x = x.negate();
         }
@@ -478,16 +477,16 @@ impl Add<Cached> for P3 {
     type Output = P1P1;
 
     fn add(self, p: Cached) -> P1P1 {
-        let YpX = self.Y + self.X;
-        let YmX = self.Y - self.X;
-        let a = YpX * p.YpX;
-        let b = YmX * p.YmX;
+        let YpX = self.Y + self.X; // Y1 + X1
+        let YmX = self.Y - self.X; // Y1 - X1
+        let B = YpX * p.YpX; // (Y1 + X1) * (Y2 + X2)
+        let b = YmX * p.YmX; // (Y1 - X1) * (Y2 - X2)
         let c = p.T2d * self.T;
         let d = self.Z * p.Z;
         let e = d + d;
 
-        let x = a - b;
-        let y = a + b;
+        let x = B - b;
+        let y = B + b;
         let z = e + c;
         let t = e - c;
 
@@ -515,6 +514,7 @@ impl Sub<Cached> for P3 {
         let y = a + b;
         let z = e - c;
         let t = e + c;
+
         P1P1 {
             X: x,
             Y: y,
@@ -562,6 +562,7 @@ impl Sub<Precomp> for P3 {
         let y = a + b;
         let z = d - c;
         let t = d + c;
+
         P1P1 {
             X: x,
             Y: y,
@@ -574,7 +575,6 @@ impl Sub<Precomp> for P3 {
 #[cfg(test)]
 mod tests {
     extern crate hex;
-    
     use super::*;
 
     static B_P3: P3 = P3 {
@@ -601,12 +601,11 @@ mod tests {
             1821297809914039,
         ]),
     };
-    
 
-    static BYP: [u8; 32] = [
-        0x58, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66,
-        0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66,
-        0x66, 0x66, 0x66, 0x66,
+    static BASEPOINT_Y: [u8; 32] = [
+        0x58, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66,
+        0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66,
+        0x66, 0x66,
     ];
 
     #[test]
@@ -614,7 +613,7 @@ mod tests {
         // let a = hex::decode("d072f8dd9c07fa7bc8d22a4b325d26301ee9202f6db89aa7c3731529e37e437c").unwrap();
         // let mut a_bytes = [0u8; 32];
         // a_bytes.copy_from_slice(&a);
-        let mut BY = BYP.clone();
+        let mut BY = BASEPOINT_Y.clone();
         // BY[31] |= 1 << 7;
         let B = P3::decode(BY).unwrap();
 
@@ -622,7 +621,6 @@ mod tests {
         assert!(B.Y == B_P3.Y);
         assert!(B.Z == B_P3.Z);
         assert!(B.T == B_P3.T.negate());
-        
         let b = B.encode();
         BY[31] |= 1 << 7;
         assert!(b == BY);
@@ -630,16 +628,17 @@ mod tests {
 
     #[test]
     fn scalar_multiply_test() {
-        let a = hex::decode("d072f8dd9c07fa7bc8d22a4b325d26301ee9202f6db89aa7c3731529e37e437c").unwrap();
+        let a = hex::decode("d072f8dd9c07fa7bc8d22a4b325d26301ee9202f6db89aa7c3731529e37e437c")
+            .unwrap();
         let aB = Precomp::scalar_multiply(&a);
 
-        let A = hex::decode("d4cf8595571830644bd14af416954d09ab7159751ad9e0f7a6cbd92379e71a66").unwrap();
+        let A = hex::decode("d4cf8595571830644bd14af416954d09ab7159751ad9e0f7a6cbd92379e71a66")
+            .unwrap();
         // let mut A_bytes = [0u8; 32];
         // A_bytes.copy_from_slice(&A);
         // let AB = P3::decode(A_bytes).unwrap();
 
         assert!(aB.encode() == A[..]);
-        
         // assert!(aB.X == AB.X);
         // assert!(aB.Y == AB.Y);
         // assert!(aB.Z == AB.Z);
@@ -648,10 +647,12 @@ mod tests {
 
     #[test]
     fn scalar_multiply_no_precomp_test() {
-        let a = hex::decode("d072f8dd9c07fa7bc8d22a4b325d26301ee9202f6db89aa7c3731529e37e437c").unwrap();
+        let a = hex::decode("d072f8dd9c07fa7bc8d22a4b325d26301ee9202f6db89aa7c3731529e37e437c")
+            .unwrap();
         let aB = Precomp::scalar_multiply_without_precomputation(&a);
 
-        let A = hex::decode("d4cf8595571830644bd14af416954d09ab7159751ad9e0f7a6cbd92379e71a66").unwrap();
+        let A = hex::decode("d4cf8595571830644bd14af416954d09ab7159751ad9e0f7a6cbd92379e71a66")
+            .unwrap();
         // let mut A_bytes = [0u8; 32];
         // A_bytes.copy_from_slice(&A);
         // let AB = P3::decode(A_bytes).unwrap();
@@ -666,8 +667,10 @@ mod tests {
 
     #[test]
     fn double_scalar_multiply_vartime_and_point_doubling_test() {
-        let a = hex::decode("d072f8dd9c07fa7bc8d22a4b325d26301ee9202f6db89aa7c3731529e37e437c").unwrap();
-        let two = hex::decode("0200000000000000000000000000000000000000000000000000000000000000").unwrap();
+        let a = hex::decode("d072f8dd9c07fa7bc8d22a4b325d26301ee9202f6db89aa7c3731529e37e437c")
+            .unwrap();
+        let two = hex::decode("0200000000000000000000000000000000000000000000000000000000000000")
+            .unwrap();
 
         // let A_bytes = hex::decode("d4cf8595571830644bd14af416954d09ab7159751ad9e0f7a6cbd92379e71a66").unwrap();
         // let mut A_array = [0u8; 32];

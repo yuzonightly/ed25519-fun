@@ -880,10 +880,14 @@ mod tests {
     #[test]
     // Test from https://github.com/str4d/ed25519-java/blob/master/test/net/i2p/crypto/eddsa/math/ed25519/Ed25519ScalarOpsTest.java
     fn multiply_add_test() {
-        let h = hex::decode("86eabc8e4c96193d290504e7c600df6cf8d8256131ec2c138a3e7e162e525404").unwrap();
-        let a = hex::decode("307c83864f2833cb427a2ef1c00a013cfdff2768d980c0a3a520f006904de94f").unwrap();
-        let r = hex::decode("f38907308c893deaf244787db4af53682249107418afc2edc58f75ac58a07404").unwrap();
-        let S = hex::decode("5fb8821590a33bacc61e39701cf9b46bd25bf5f0595bbe24655141438e7a100b").unwrap();
+        let h = hex::decode("86eabc8e4c96193d290504e7c600df6cf8d8256131ec2c138a3e7e162e525404")
+            .unwrap();
+        let a = hex::decode("307c83864f2833cb427a2ef1c00a013cfdff2768d980c0a3a520f006904de94f")
+            .unwrap();
+        let r = hex::decode("f38907308c893deaf244787db4af53682249107418afc2edc58f75ac58a07404")
+            .unwrap();
+        let S = hex::decode("5fb8821590a33bacc61e39701cf9b46bd25bf5f0595bbe24655141438e7a100b")
+            .unwrap();
 
         let mut s = [0u8; 32];
         multiply_add(&mut s, &h, &a, &r);

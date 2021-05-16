@@ -87,10 +87,12 @@ impl Keypair {
         })
     }
 
+    // COMMENTS
     pub fn sign(&self, message: &[u8]) -> Signature {
         self.secret.sign(&self.public, message)
     }
 
+    // COMMENTS
     pub fn verify(&self, message: &[u8], signature: Signature) -> Result<(), Error> {
         self.public.verify(message, &signature)
     }

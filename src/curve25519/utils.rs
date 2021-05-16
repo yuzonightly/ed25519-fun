@@ -48,9 +48,7 @@ pub fn load_4i(bytes: &[u8]) -> i64 {
 
 /// Converts the first 24 bits from bytes to i64.
 pub fn load_3i(bytes: &[u8]) -> i64 {
-    let h = (bytes[0] as u64)
-        | ((bytes[1] as u64) << 8)
-        | ((bytes[2] as u64) << 16);
+    let h = (bytes[0] as u64) | ((bytes[1] as u64) << 8) | ((bytes[2] as u64) << 16);
 
     h as i64
 }

@@ -142,7 +142,9 @@ mod tests {
 
     #[test]
     fn as_from_slices_public_key() {
-        let public_bytes = hex::decode("d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a").unwrap();
+        let public_bytes =
+            hex::decode("d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a")
+                .unwrap();
         let public = PublicKey::from_bytes(&public_bytes).unwrap();
         let bytes = public.as_bytes();
         assert!(bytes == public_bytes[..]);

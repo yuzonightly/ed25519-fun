@@ -113,7 +113,9 @@ mod tests {
 
     #[test]
     fn as_from_slices_secret_key() {
-        let secret_bytes = hex::decode("9d61b19deffd5a60ba844af492ec2cc44449c5697b326919703bac031cae7f60").unwrap();
+        let secret_bytes =
+            hex::decode("9d61b19deffd5a60ba844af492ec2cc44449c5697b326919703bac031cae7f60")
+                .unwrap();
         let secret = SecretKey::from_bytes(&secret_bytes).unwrap();
         let bytes = secret.as_bytes();
         assert!(bytes == secret_bytes[..]);

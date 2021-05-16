@@ -65,7 +65,6 @@ mod test_vectors {
         }
     }
 
-    
     // verify.input test vectors: Taming the many EdDSAs
     #[test]
     pub fn eddsa_test_vectors() {
