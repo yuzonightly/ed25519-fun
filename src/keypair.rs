@@ -42,27 +42,28 @@ impl Keypair {
     /// ```
     pub fn generate() -> Keypair {
         let secret = SecretKey::generate_key();
+        let public = PublicKey::generate(&secret);
 
-        // Hash the 32-byte private key using SHA-512, storing the digest in
-        // a 64-octet large buffer h. Only the lower 32 bytes are
-        // used for generating the public key.
-        let h = {
-            let mut hash = Sha512::default();
-            hash.input(secret.0);
-            let mut output = hash.result();
-            // Lowest 3 bits of the first octet are cleared
-            output[0] &= 248;
-            // Highest bit of the last octet is cleared
-            output[31] &= 63;
-            // Second highest bit of the last octet is set
-            output[31] |= 64;
-            output
-        };
+        // // Hash the 32-byte private key using SHA-512, storing the digest in
+        // // a 64-octet large buffer h. Only the lower 32 bytes are
+        // // used for generating the public key.
+        // let h = {
+        //     let mut hash = Sha512::default();
+        //     hash.input(secret.0);
+        //     let mut output = hash.result();
+        //     // Lowest 3 bits of the first octet are cleared
+        //     output[0] &= 248;
+        //     // Highest bit of the last octet is cleared
+        //     output[31] &= 63;
+        //     // Second highest bit of the last octet is set
+        //     output[31] |= 64;
+        //     output
+        // };
 
-        // Scalar multiplication: h * B.
-        let point = Precomp::scalar_multiply(&h[0..32]);
-        // Encode P2 point y coordinate.
-        let public = PublicKey(point.encode());
+        // // Scalar multiplication: h * B.
+        // let point = Precomp::scalar_multiply(&h[0..32]);
+        // // Encode P2 point y coordinate.
+        // let public = PublicKey(point.encode());
 
         Keypair { secret, public }
     }
