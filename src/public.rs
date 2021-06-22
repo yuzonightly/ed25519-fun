@@ -86,8 +86,6 @@ impl PublicKey {
     ///     let keypair = Keypair::generate();
     ///     let public_key = keypair.public;
     ///     let bytes: [u8; 32] = public_key.as_bytes();
-    ///     ...
-    ///     ...
     /// }
     /// ```
     pub fn as_bytes(&self) -> [u8; 32] {
@@ -110,8 +108,6 @@ impl PublicKey {
     ///     let public_key = keypair.public;
     ///     let bytes: [u8; 32] = public_key.as_bytes();
     ///     let public_key_from_bytes: PublicKey = PublicKey::from_bytes(&bytes).unwrap();
-    ///     ...
-    ///     ...
     /// }
     /// ```
     pub fn from_bytes(bytes: &[u8]) -> Result<Self, Error> {
@@ -144,8 +140,6 @@ impl PublicKey {
     ///     let public_key = keypair.public;
     ///     let signature: Signature = secret_key.sign(&public_key, message);
     ///     let _signok = public_key.verify(message, &signature);
-    ///     ...
-    ///     ...
     /// }
     /// ```
     pub fn verify(&self, message: &[u8], sig: &Signature) -> Result<(), Error> {

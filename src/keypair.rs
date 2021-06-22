@@ -38,8 +38,6 @@ impl Keypair {
     ///
     /// fn main() {
     ///     let keypair = Keypair::generate();
-    ///     ...
-    ///     ...
     /// }
     /// ```
     pub fn generate() -> Keypair {
@@ -84,8 +82,6 @@ impl Keypair {
     ///     let keypair = Keypair::generate();
     ///     let secret_key: SecretKey = keypair.secret;
     ///     let keypair_from_secret_key: Keypair = Keypair::generate_public_key(secret_key);
-    ///     ...
-    ///     ...
     /// }
     /// ```
     pub fn generate_public_key(secret: SecretKey) -> Keypair {
@@ -108,8 +104,6 @@ impl Keypair {
     /// fn main() {
     ///     let keypair = Keypair::generate();
     ///     let bytes: [u8; 64] = keypair.as_bytes();
-    ///     ...
-    ///     ...
     /// }
     /// ```
     pub fn as_bytes(&self) -> [u8; 64] {
@@ -134,8 +128,6 @@ impl Keypair {
     ///     let keypair = Keypair::generate();
     ///     let bytes: [u8; 64] = keypair.as_bytes();
     ///     let keypair_from_bytes: Keypair = Keypair::from_bytes(&bytes).unwrap();
-    ///     ...
-    ///     ...
     /// }
     /// ```
     pub fn from_bytes(bytes: &[u8]) -> Result<Self, Error> {
@@ -167,8 +159,6 @@ impl Keypair {
     ///     let message: &[u8] = b"";
     ///     let keypair = Keypair::generate();
     ///     let signature: Signature = keypair.sign(message);
-    ///     ...
-    ///     ...
     /// }
     /// ```rust
     pub fn sign(&self, message: &[u8]) -> Signature {
@@ -191,8 +181,6 @@ impl Keypair {
     ///     let keypair = Keypair::generate();
     ///     let signature: Signature = keypair.sign(message);
     ///     let _signok = keypair.verify(message, signature).unwrap();
-    ///     ...
-    ///     ...
     /// }
     /// ```
     pub fn verify(&self, message: &[u8], signature: Signature) -> Result<(), Error> {

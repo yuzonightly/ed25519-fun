@@ -29,8 +29,6 @@ impl Signature {
     ///     let keypair = Keypair::generate();
     ///     let signature: Signature = keypair.sign(message);
     ///     let bytes: [u8; 64] = signature.as_bytes();
-    ///     ...
-    ///     ...
     /// }
     /// ```
     pub fn as_bytes(&self) -> [u8; 64] {
@@ -54,8 +52,6 @@ impl Signature {
     ///     let signature: Signature = keypair.sign(message);
     ///     let bytes: [u8; 64] = signature.as_bytes();
     ///     let signature_from_bytes = Signature::from_bytes(&bytes);
-    ///     ...
-    ///     ...
     /// }
     /// ```
     pub fn from_bytes(bytes: &[u8]) -> Result<Self, Error> {

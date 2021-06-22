@@ -52,8 +52,6 @@ impl SecretKey {
     ///     let keypair = Keypair::generate();
     ///     let secret_key = keypair.secret;
     ///     let bytes: [u8; 32] = secret_key.as_bytes();
-    ///     ...
-    ///     ...
     /// }
     /// ```
     pub fn as_bytes(&self) -> [u8; 32] {
@@ -76,8 +74,6 @@ impl SecretKey {
     ///     let secret_key = keypair.secret;
     ///     let bytes: [u8; 32] = secret_key.as_bytes();
     ///     let secret_key_from_bytes: SecretKey = SecretKey::from_bytes(&bytes).unwrap();
-    ///     ...
-    ///     ...
     /// }
     /// ```
     pub fn from_bytes(bytes: &[u8]) -> Result<Self, Error> {
@@ -106,8 +102,6 @@ impl SecretKey {
     ///     let secret_key = keypair.secret;
     ///     let public_key = keypair.public;
     ///     let signature: Signature = secret_key.sign(&public_key, message);
-    ///     ...
-    ///     ...
     /// }
     /// ```
     pub fn sign(&self, public: &PublicKey, message: &[u8]) -> Signature {
