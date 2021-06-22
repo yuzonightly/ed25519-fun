@@ -152,6 +152,8 @@ impl Keypair {
     /// Returns `Signature`.
     ///
     /// # Example
+    ///
+    /// ```rust
     /// extern crate ed25519_fun;
     ///
     /// use ed25519_fun::{Keypair, Signature};
@@ -161,7 +163,7 @@ impl Keypair {
     ///     let keypair = Keypair::generate();
     ///     let signature: Signature = keypair.sign(message);
     /// }
-    /// ```rust
+    /// ```
     pub fn sign(&self, message: &[u8]) -> Signature {
         self.secret.sign(&self.public, message)
     }
