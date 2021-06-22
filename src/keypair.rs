@@ -17,8 +17,6 @@ use sha2::{Digest, Sha512};
 
 // TODO: comments; variable names.
 
-// * Leverage types (abstraction); implement traits
-
 /// A pair of public and secret keys.
 pub struct Keypair {
     pub secret: SecretKey,
@@ -26,8 +24,24 @@ pub struct Keypair {
 }
 
 impl Keypair {
-    /// Generates asymmetric keys: both public and secret,
+    /// Generates asymmetric keys: secret and public keys;
     /// as described in RFC 8032.
+    ///
+    /// Returns `Keypair` containing the secret and public keys.
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// extern crate ed25519_fun;
+    ///
+    /// use ed25519_fun::{Keypair};
+    ///
+    /// fn main() {
+    ///     let keypair = Keypair::generate();
+    ///     ...
+    ///     ...
+    /// }
+    /// ```
     pub fn generate() -> Keypair {
         let secret = SecretKey::generate_key();
 
@@ -55,14 +69,49 @@ impl Keypair {
         Keypair { secret, public }
     }
 
-    /// Generates public key by providing your own private key.
+    /// Generates `Keypair` by providing a `SecretKey`.
+    ///
+    /// Returns a `Keypair` containing `SecretKey` and `PublicKey`.
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// extern crate ed25519_fun;
+    ///
+    /// use ed25519_fun::{Keypair, SecretKey};
+    ///
+    /// fn main() {
+    ///     let keypair = Keypair::generate();
+    ///     let secret_key: SecretKey = keypair.secret;
+    ///     let keypair_from_secret_key: Keypair = Keypair::generate_public_key(secret_key);
+    ///     ...
+    ///     ...
+    /// }
+    /// ```
     pub fn generate_public_key(secret: SecretKey) -> Keypair {
         let public = PublicKey::generate(&secret);
 
         Keypair { secret, public }
     }
 
-    /// Converts Keypair to bytes.
+    /// Converts `Keypair` into a 64-byte array.
+    ///
+    /// Returns a 64-byte array `[u8; 64]`.
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// extern crate ed25519_fun;
+    ///
+    /// use ed25519_fun::{Keypair};
+    ///
+    /// fn main() {
+    ///     let keypair = Keypair::generate();
+    ///     let bytes: [u8; 64] = keypair.as_bytes();
+    ///     ...
+    ///     ...
+    /// }
+    /// ```
     pub fn as_bytes(&self) -> [u8; 64] {
         let mut keypair = [0u8; KeypairSize];
         keypair[..SecretKeySize].copy_from_slice(&self.secret.0);
@@ -70,7 +119,25 @@ impl Keypair {
         keypair
     }
 
-    /// Converts bytes to Keypair.
+    /// Constructs `Keypair` from a slice.
+    ///
+    /// Returns `Ok(Keypair)` if `bytes` is 64 bytes long and `Err` otherwise.
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// extern crate ed25519_fun;
+    ///
+    /// use ed25519_fun::{Keypair};
+    ///
+    /// fn main() {
+    ///     let keypair = Keypair::generate();
+    ///     let bytes: [u8; 64] = keypair.as_bytes();
+    ///     let keypair_from_bytes: Keypair = Keypair::from_bytes(&bytes).unwrap();
+    ///     ...
+    ///     ...
+    /// }
+    /// ```
     pub fn from_bytes(bytes: &[u8]) -> Result<Self, Error> {
         if bytes.len() != KeypairSize {
             return Err(Error::InvalidKeypair);
@@ -87,12 +154,47 @@ impl Keypair {
         })
     }
 
-    // COMMENTS
+    /// Signs a message with this `Keypair`.
+    ///
+    /// Returns `Signature`.
+    ///
+    /// # Example
+    /// extern crate ed25519_fun;
+    ///
+    /// use ed25519_fun::{Keypair, Signature};
+    ///
+    /// fn main() {
+    ///     let message: &[u8] = b"";
+    ///     let keypair = Keypair::generate();
+    ///     let signature: Signature = keypair.sign(message);
+    ///     ...
+    ///     ...
+    /// }
+    /// ```rust
     pub fn sign(&self, message: &[u8]) -> Signature {
         self.secret.sign(&self.public, message)
     }
 
-    // COMMENTS
+    /// Verifies a signature with this `Keypair`.
+    ///
+    /// Returns `Ok(())` if the signature is valid and `Err` otherwise.
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// extern crate ed25519_fun;
+    ///
+    /// use ed25519_fun::{Keypair, Signature};
+    ///
+    /// fn main() {
+    ///     let message: &[u8] = b"";
+    ///     let keypair = Keypair::generate();
+    ///     let signature: Signature = keypair.sign(message);
+    ///     let _signok = keypair.verify(message, signature).unwrap();
+    ///     ...
+    ///     ...
+    /// }
+    /// ```
     pub fn verify(&self, message: &[u8], signature: Signature) -> Result<(), Error> {
         self.public.verify(message, &signature)
     }

@@ -2,7 +2,7 @@
 // - Yuzo <yuzonakai@gmail.com>
 
 // Key, signature and verification related errors.
-// See rust-ed25519-compact.
+// See https://github.com/jedisct1/rust-ed25519-compact.
 
 use core::fmt::{self, Display};
 

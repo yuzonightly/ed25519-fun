@@ -13,10 +13,51 @@ use crate::errors::*;
 pub struct Signature(pub(crate) [u8; SignatureSize]);
 
 impl Signature {
+    /// Converts `Signature` into a 64-byte array.
+    ///
+    /// Returns a 64-byte array `[u8; 64]`.
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// extern crate ed25519_fun;
+    ///
+    /// use ed25519_fun::{Keypair, Signature};
+    ///
+    /// fn main() {
+    ///     let message: &[u8] = b"";
+    ///     let keypair = Keypair::generate();
+    ///     let signature: Signature = keypair.sign(message);
+    ///     let bytes: [u8; 64] = signature.as_bytes();
+    ///     ...
+    ///     ...
+    /// }
+    /// ```
     pub fn as_bytes(&self) -> [u8; 64] {
         self.0
     }
 
+    /// Constructs `Signature` from a slice.
+    ///
+    /// Returns `Ok(Signature)` if `bytes` is 64 bytes long and `Err` otherwise.
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// extern crate ed25519_fun;
+    ///
+    /// use ed25519_fun::{Keypair, Signature};
+    ///
+    /// fn main() {
+    ///     let message: &[u8] = b"";
+    ///     let keypair = Keypair::generate();
+    ///     let signature: Signature = keypair.sign(message);
+    ///     let bytes: [u8; 64] = signature.as_bytes();
+    ///     let signature_from_bytes = Signature::from_bytes(&bytes);
+    ///     ...
+    ///     ...
+    /// }
+    /// ```
     pub fn from_bytes(bytes: &[u8]) -> Result<Self, Error> {
         let mut signature = [0u8; SignatureSize];
 

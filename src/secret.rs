@@ -28,6 +28,8 @@ pub struct SecretKey(pub(crate) [u8; SecretKeySize]);
 impl SecretKey {
     /// Generates the secret key: 32 octets of cryptographically
     /// secure random data.
+    ///
+    /// Returns `SecretKey`.
     pub(crate) fn generate_key() -> SecretKey {
         let mut sk = [0u8; 32];
         let mut csprng: ThreadRng = thread_rng();
@@ -35,11 +37,49 @@ impl SecretKey {
         SecretKey(sk)
     }
 
+    /// Converts `SecretKey` into a 32-byte array.
+    ///
+    /// Returns a 32-byte array `[u8; 32]`.
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// extern crate ed25519_fun;
+    ///
+    /// use ed25519_fun::{Keypair};
+    ///
+    /// fn main() {
+    ///     let keypair = Keypair::generate();
+    ///     let secret_key = keypair.secret;
+    ///     let bytes: [u8; 32] = secret_key.as_bytes();
+    ///     ...
+    ///     ...
+    /// }
+    /// ```
     pub fn as_bytes(&self) -> [u8; 32] {
         self.0
     }
 
-    /// Returns a SecretKey from a slice.
+    /// Constructs `SecretKey` from a slice.
+    ///
+    /// Returns `Ok(SecretKey)` if `bytes` is 32 bytes long and `Err` otherwise.
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// extern crate ed25519_fun;
+    ///
+    /// use ed25519_fun::{Keypair, SecretKey};
+    ///
+    /// fn main() {
+    ///     let keypair = Keypair::generate();
+    ///     let secret_key = keypair.secret;
+    ///     let bytes: [u8; 32] = secret_key.as_bytes();
+    ///     let secret_key_from_bytes: SecretKey = SecretKey::from_bytes(&bytes).unwrap();
+    ///     ...
+    ///     ...
+    /// }
+    /// ```
     pub fn from_bytes(bytes: &[u8]) -> Result<Self, Error> {
         let mut secret = [0u8; SecretKeySize];
         if bytes.len() != SecretKeySize {
@@ -49,8 +89,27 @@ impl SecretKey {
         Ok(SecretKey(secret))
     }
 
-    /// RFC 8032.
-    /// Generates the signature.
+    /// Signs a message with this `SecretKey`.
+    ///
+    /// Returns `Signature`.
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// extern crate ed25519_fun;
+    ///
+    /// use ed25519_fun::{Keypair, Signature};
+    ///
+    /// fn main() {
+    ///     let message: &[u8] = b"";
+    ///     let keypair = Keypair::generate();
+    ///     let secret_key = keypair.secret;
+    ///     let public_key = keypair.public;
+    ///     let signature: Signature = secret_key.sign(&public_key, message);
+    ///     ...
+    ///     ...
+    /// }
+    /// ```
     pub fn sign(&self, public: &PublicKey, message: &[u8]) -> Signature {
         // Hash the secret key using SHA-512.
         let h = {

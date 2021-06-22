@@ -43,7 +43,9 @@ fn check_lt_l(s: &[u8]) -> bool {
 }
 
 impl PublicKey {
-    /// Generates the public key by providing the secret key.
+    /// Generates `PublicKey` by providing a `SecretKey`.
+    ///
+    /// Returns the `PublicKey` counterpart.
     pub(crate) fn generate(pr: &SecretKey) -> PublicKey {
         // Hash the 32-byte private key using SHA-512, storing the digest in
         // a 64-octet large buffer h. Only the lower 32 bytes are
@@ -69,11 +71,49 @@ impl PublicKey {
         PublicKey(public)
     }
 
+    /// Converts `PublicKey` into a 32-byte array.
+    ///
+    /// Returns a 32-byte array `[u8; 32]`.
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// extern crate ed25519_fun;
+    ///
+    /// use ed25519_fun::{Keypair, PublicKey};
+    ///
+    /// fn main() {
+    ///     let keypair = Keypair::generate();
+    ///     let public_key = keypair.public;
+    ///     let bytes: [u8; 32] = public_key.as_bytes();
+    ///     ...
+    ///     ...
+    /// }
+    /// ```
     pub fn as_bytes(&self) -> [u8; 32] {
         self.0
     }
 
-    /// Returns a PublicKey from a slice.
+    /// Constructs `PublicKey` from a slice.
+    ///
+    /// Returns `Ok(PublicKey)` if `bytes` is 32 bytes long and `Err` otherwise.
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// extern crate ed25519_fun;
+    ///
+    /// use ed25519_fun::{Keypair, PublicKey};
+    ///
+    /// fn main() {
+    ///     let keypair = Keypair::generate();
+    ///     let public_key = keypair.public;
+    ///     let bytes: [u8; 32] = public_key.as_bytes();
+    ///     let public_key_from_bytes: PublicKey = PublicKey::from_bytes(&bytes).unwrap();
+    ///     ...
+    ///     ...
+    /// }
+    /// ```
     pub fn from_bytes(bytes: &[u8]) -> Result<Self, Error> {
         let mut public = [0u8; PublicKeySize];
 
@@ -86,7 +126,28 @@ impl PublicKey {
         Ok(PublicKey(public))
     }
 
-    /// Verifies the signature.
+    /// Verifies a signature with this `PublicKey`.
+    ///
+    /// Returns `Ok(())` if the signature is valid and `Err` otherwise.
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// extern crate ed25519_fun;
+    ///
+    /// use ed25519_fun::{Keypair, Signature};
+    ///
+    /// fn main() {
+    ///     let message: &[u8] = b"";
+    ///     let keypair = Keypair::generate();
+    ///     let secret_key = keypair.secret;
+    ///     let public_key = keypair.public;
+    ///     let signature: Signature = secret_key.sign(&public_key, message);
+    ///     let _signok = public_key.verify(message, &signature);
+    ///     ...
+    ///     ...
+    /// }
+    /// ```
     pub fn verify(&self, message: &[u8], sig: &Signature) -> Result<(), Error> {
         let signature = sig.as_bytes();
         let s = &signature[32..64];
