@@ -1,5 +1,5 @@
 // Author:
-// - Eduardo Yuzo Nakai <yuzonakai@gmail.com>
+// - Yuzo <yuzonakai@gmail.com>
 
 // ed25519-rust benchmarks.
 
