@@ -1,6 +1,6 @@
-# ed25519
+# ed25519-fun
 
-Rust implementation of Ed25519. Please do not use it (learning purposes). Heavily based on the `ed25519_donna`, `ed25519_dalek` and str4d's `ed25519-java` implementations. Checkout their implementations instead.
+Rust implementation of Ed25519. Please do not use it (learning purposes). Heavily based on the `ed25519_donna`, `ed25519_dalek` and str4d's `ed25519-java` implementations. Check out their implementations instead.
 
 ## Installation
 
