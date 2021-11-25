@@ -51,12 +51,12 @@ let signok: bool = keypair.verify(message, signature);
 
 To run the benchmarks, run the following command in the project's root:
 
-```console
-me@mars:~/ed25519-fun$ cargo bench
+```bash
+cargo bench
 ```
 
 To run the tests, run the following command in the project's root:
 
-```console
-me@mars:~/ed25519-fun$ cargo test
+```bash
+cargo test
 ```
