@@ -1,7 +1,7 @@
 // Author:
 // - Yuzo <yuzonakai@gmail.com>
 
-// ed25519-rust benchmarks.
+// ed25519-fun benchmarks.
 
 extern crate criterion;
 extern crate ed25519_fun;

@@ -667,16 +667,8 @@ mod tests {
 
     #[test]
     fn double_scalar_multiply_vartime_and_point_doubling_test() {
-        let a = hex::decode("d072f8dd9c07fa7bc8d22a4b325d26301ee9202f6db89aa7c3731529e37e437c")
-            .unwrap();
         let two = hex::decode("0200000000000000000000000000000000000000000000000000000000000000")
             .unwrap();
-
-        // let A_bytes = hex::decode("d4cf8595571830644bd14af416954d09ab7159751ad9e0f7a6cbd92379e71a66").unwrap();
-        // let mut A_array = [0u8; 32];
-        // A_array.copy_from_slice(&A_bytes);
-        // let A = P3::decode(A_array).unwrap();
-
         let B = B_P3.clone();
         let four_B = P2::double_scalar_multiply_vartime(&two, &two, B).encode();
         let B_four = B.double().to_P3().double().to_P2().encode();

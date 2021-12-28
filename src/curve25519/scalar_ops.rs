@@ -879,6 +879,7 @@ mod tests {
 
     #[test]
     // Test from https://github.com/str4d/ed25519-java/blob/master/test/net/i2p/crypto/eddsa/math/ed25519/Ed25519ScalarOpsTest.java
+    #[allow(non_snake_case)]
     fn multiply_add_test() {
         let h = hex::decode("86eabc8e4c96193d290504e7c600df6cf8d8256131ec2c138a3e7e162e525404")
             .unwrap();

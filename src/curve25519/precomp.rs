@@ -2,8 +2,6 @@
 // - Yuzo <yuzonakai@gmail.com>
 
 // Precomputations for scalar multiplications.
-// See curve25519_const module for BI and PRECOMP_BASE
-// precomputed values.
 
 #![allow(non_snake_case)]
 

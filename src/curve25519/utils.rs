@@ -54,6 +54,7 @@ pub fn load_3i(bytes: &[u8]) -> i64 {
 }
 
 #[cfg(test)]
+#[allow(non_snake_case)]
 mod tests {
     use super::*;
 
