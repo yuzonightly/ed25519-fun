@@ -36,7 +36,7 @@ Generate the signature:
 
 ```rust
 let message: &[u8] = b"";
-let signature: Signature = keypair.sign(message);
+let signature: Signature = keypair.sign(&message);
 ```
 
 ### Signature verification
@@ -44,7 +44,7 @@ let signature: Signature = keypair.sign(message);
 Verify the signature:
 
 ```rust
-let signok: bool = keypair.verify(message, signature);
+let signok: bool = keypair.verify(&message, &signature).is_ok();
 ```
 
 ## Benchmarks and Tests
